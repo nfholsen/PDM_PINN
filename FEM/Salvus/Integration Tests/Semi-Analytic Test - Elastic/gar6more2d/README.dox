@@ -1,0 +1,378 @@
+/**
+@mainpage
+
+@author Julien Diaz and Abdelaaziz Ezziani
+
+
+@section Description
+This code compute the quasi-analytical solution of
+several wave equation in two layered media, using
+the Cagniard de Hoop
+method \cite Cag , \cite DH ,\cite VDH , \cite PG ,\cite  QG ,\cite  JD ,\cite RAP_DE6509 ,\cite Rap3 . It produces
+seismograms at given points.
+
+The equations can be written in the general form.  
+\f{eqnarray}\newcommand{\setR}{\hbox{I}\!\hbox{R}}\newcommand{\derp}[2]{\frac{\partial #1}{\partial #2}}\newcommand{\dsp}{\displaystyle}
+ A(y)\derp {^2 U}{t^2}-B(y) U=\delta({\bf x}-{\bf x_s})\,f(t), 
+\quad x\in\setR,\,y\in\setR
+\f}
+where \f$A\f$ and \f$B\f$ are operators satisfying
+<div align=center>
+<table>
+<tr><td>\f$A(y)=A^+, \, B(y)=B^+, \quad y>0\f$, </td></tr>
+<tr><td>\f$A(y)=A^-, \, B(y)=B^-, \quad y<0.\f$</td></tr>
+</table></div>
+
+The code analytically compute the Green  function \f$u\f$ of the problem
+\f{eqnarray}
+ A(y)\derp {^2 u}{t^2}-B(y) u=\delta({\mathbf
+   x}-\mathbf{x_s})\,\delta(t), \quad x\in\setR, y\in\setR
+\f}
+and convolves it with the source function \f$f\f$. You
+can modify this function in the subroutine 
+  lib/libgeneral/source.F90. The convolution is
+done by a numerical integration, that is why the
+solution is only ``quasi-analytical''. You can
+improve the accuracy of the solution by increasing the
+number of intervals used for the integration (the
+variable <i> Nint </i>in the data file  <i>Gar6more2D.dat</i>)
+\subsection Acoustic Acoustic
+The code computes a seismogram at points
+\f$(x_i,y)_{i=1,Nx}\f$ of the pressure solution of the
+equations (in the following  \f$\mathbf{x_s}=(0,h)\f$)
+<ul>
+<li> Infinite Medium
+\f{eqnarray*}
+ \derp {^2 P^+}{t^2}-{c^+}^2 \Delta
+ P^+=\delta({\mathbf x}-\mathbf{x_s})f(t),\quad
+ (x,y)\in\setR^2.
+\f}
+<li> Free Boundary Condition
+\f{eqnarray*}
+ \derp {^2 P^+}{t^2}-{c^+}^2 \Delta P^+=\delta({\mathbf x}-\mathbf{x_s})f(t),\quad x\in\setR, y>0,
+\f}
+with the boundary condition
+\f{eqnarray*}
+  P^+=0 \quad x\in\setR, y=0.
+\f}
+<li> Wall Boundary Condition
+\f{eqnarray*}
+ \derp {^2 P^+}{t^2}-{c^+}^2 \Delta P^+=\delta({\mathbf x}-\mathbf{x_s})f(t),\quad x\in\setR, y>0,
+\f}
+with the boundary condition
+\f{eqnarray*}
+  \frac{\partial P^+}{\partial y}=0 \quad x\in\setR, y=0.
+\f}
+<li> Bilayered Medium
+\f{eqnarray*}
+ \derp {^2 P^+}{t^2}-{c^+}^2 \Delta P^+=\delta({\mathbf x}-\mathbf{x_s})f(t),\quad x\in\setR, y>0,\\[10pt]
+ \derp {^2 P^-}{t^2}-{c^-}^2 \Delta P^-=\delta({\mathbf x}-\mathbf{x_s})f(t),\quad x\in\setR, y<0,
+\f}
+with the transmission conditions
+<div align=center>
+<table> 
+<tr><td>\f$P^+=P^-\f$,</td></tr>
+<tr><td>\f$\dsp \rho^+ \frac{\partial P^-}{\partial y}=\rho^- \frac{\partial P^+}{\partial y},\quad x\in\setR, y=0.\f$</td></tr>
+</table>
+</div>
+</ul>
+The code also computes the velocity given by the relation~:
+\f[\derp {\mathbf V^\pm} t =-\frac{1}{\rho^\pm}{\mathbf \nabla} P^\pm.\f] 
+If you  want to compute  the displacement \f$U\f$, it can be easily computed by replacing \f$f(t)\f$ by the primitive of the source function you are using. For instance, if you are using a Rickert, you'll have to consider a first derivative of a Gaussian for \f$f\f$.  
+\subsection Acouselas Acoustic/elastodynamic (isotropic)
+The code computes a seismogram at point
+\f$(x_i,y)_{i=1,Nx}\f$ of the pressure (in the fluid) and the
+velocity (in the solid) solution of the equations
+\f{eqnarray}
+ \derp {^2 P^+}{t^2}-{c^+}^2 \Delta P^+=\delta({\mathbf x}-\mathbf{x_s})f(t),\quad x\in\setR, y>0,\\[10pt]
+ \derp {^2 \mathbf{V}^-}{t^2}-(\lambda^-+2\mu^-)
+ {\mathbf \nabla} (\nabla \cdot {\mathbf{V}})+\mu^-\nabla\times(\nabla \times {\mathbf{V}^-})=0,\quad x\in\setR, y<0,
+\f}
+with  \f$\mathbf{x_s}=(0,h)\f$ and the transmission conditions
+<div align=center>
+<table>
+<tr><td>\f$\dsp \derp {V^-_y}t=-\frac{1}{\rho^+}\derp {P^+}{y}\f$</td><td rowspan="3">\f$\quad y=0\f$, </td></tr>
+<tr><td>\f$\dsp (\lambda^-+2\mu^-) \derp {V_y^-}{y}+\lambda^- \derp{V_x^-}{x}=\derp{P^+}{t}\f$</td></tr>
+<tr><td>\f$\dsp \derp{V_x^-}y+\derp {V_y^-} x=0.\f$</td></tr>
+</table></div>
+on the interface \f$y=0\f$. 
+The code  also computes the velocity in the fluid by using the relation
+\f[\derp {V^+} t =-\frac{1}{\rho^+}\nabla P^+.\f]
+Once again, if you want to compute the displacement \f$U\f$, it can be easily computed by replacing \f$f(t)\f$ by the primitive of the source function you are using.
+\subsection Acousporo Acoustic/poroelastic 
+(see @cite RAP_DE6509).
+The code computes  a seismogram at point
+\f$(x_i,y)_{i=1,Nx}\f$ of the pressure
+\f$P^+\f$ and the displacement \f$U^+\f$ (in the fluid) and the
+solid displacement \f$U_s^-\f$ (in the poroelastic medium) solution of the equations
+\f[ \begin{array}{lr}
+\left|
+ \begin{array}{l}
+ \dsp \derp {^2 P^+}{t^2}-{c^+}^2 \Delta
+ \chi^+=\delta({\mathbf
+   x}-\mathbf{x_s})f(t),\\[10pt]
+\dsp \derp {^2U^+} {t} =-\frac{1}{\rho^+}\nabla P^+.
+\end{array}
+\right.
+\end{array}\f]
+for \f$x\in\setR, y>0\f$ and 
+\f[\begin{array}{lr}
+\left|
+  \begin{array}{l}
+\dsp  (1-\phi^-)\rho_s^- \derp {^2
+  \mathbf U_s^-}{t^2}+\phi\rho_f^-\derp {^2
+  \mathbf U_f^-
+}{t^2}-(\lambda^-+2\mu^-) \nabla (\nabla \cdot
+\mathbf U_s^-)+\mu^-\nabla\times(\nabla \times \mathbf U_s^-)+\beta\,\nabla P^-=0
+,\\[10pt]
+    \dsp  (1-a^-)\rho_f^- \derp {^2
+  \mathbf U_s^-}{t^2}+a^-\rho_f^-\derp {^2
+  \mathbf U_f^-}{t^2}+\nabla P^-=0\\[10pt]
+\dsp \frac 1 {m^-} P^- +(\beta^--\phi^-) \nabla \cdot \mathbf U_s^-+ \phi^- \nabla \cdot \mathbf U_f^-=0
+  \end{array}
+\right.
+ \end{array}\f]
+for \f$x\in\setR, y<0\f$, either with the open pore transmission
+conditions (if parameter open is set to 1 in Gar6more2D.dat))
+<div align=center> 
+<table>
+<tr><td>\f$\dsp \phi^-(U_{fy}^--U_{sy}^-)=U^+_y-U_{sy}^-,\f$</td></tr>
+<tr><td>\f$\dsp P^-=P^+,\f$</td></tr>
+<tr><td>\f$\dsp \big(\lambda^-+m^-\beta^-(\beta^--\phi^-)\big)\,\nabla\cdot \mathbf U_s^-+2\mu^-\derp{U_{sy}^-}{y}+m^-\beta^-\phi^-\nabla\cdot \mathbf U_f^-
+=-P^+,\f$</td></tr>
+<tr><td>\f$\dsp\derp{U_{sx}^-}{y}+\derp{U_{sy}^-}{x}=0\f$,</td></tr>
+</table>
+</div>
+or with the sealed pore transmission
+conditions (if parameter open is set to 0 in Gar6more2D.dat))
+<div align=center> 
+<table>
+<tr><td>\f$\dsp \phi^-(U_{fy}^--U_{sy}^-)=U^+_y-U_{sy}^-,\f$</td></tr>
+<tr><td>\f$U_{fy}^-=U_{sy}^-,\f$</td></tr>
+<tr><td>\f$\dsp \big(\lambda^-+m^-\beta^-(\beta^--\phi^-)\big)\,\nabla\cdot \mathbf U_s^-+2\mu^-\derp{U_{sy}^-}{y}+m^-\beta^-\phi^-\nabla\cdot \mathbf U_f^-
+=-P^+,\f$</td></tr>
+<tr><td>\f$\dsp\derp{U_{sx}^-}{y}+\derp{U_{sy}^-}{x}=0\f$,</td></tr>
+</table>
+</div>
+on the interface \f$y=0\f$.
+The code
+does not compute the fluid displacement and the
+pressure in the poroelastic medium, but there is
+no particular difficulty to do that. 
+\section Elas Elastodynamic
+The code computes a seismogram at points
+\f$(x_i,y)_{i=1,Nx}\f$ of the velocity solution of the
+equations (in the following  \f$\mathbf{x_s}=(0,h)\f$)
+<ul>
+<li> (Infinite Medium)
+\f{eqnarray*}
+   \derp {^2 \mathbf{V}^+}{t^2}-(\lambda^++2\mu^+)
+   {\mathbf \nabla} (\nabla \cdot
+   {\mathbf{V}^+})+\mu^+\nabla\times(\nabla \times
+   {\mathbf{V}^+})=F(\mathbf x,t),\quad \mathbf x \in\setR^2.
+\f}
+with 
+\f[F(\mathbf x,t)=\nabla \delta({\mathbf
+    x}-\mathbf{x_s})f_P(t)+\nabla\times \delta({\mathbf x}-\mathbf{x_s})f_S(t)\f]
+The first term of \f$F\f$ represents a \f$P-\f$source
+while the second one represents a \f$S-\f$source.
+<li> (Free Boundary Condition)
+\f{eqnarray*}
+   \derp {^2 \mathbf{V}^+}{t^2}-(\lambda^++2\mu^+)
+   {\mathbf \nabla} (\nabla \cdot
+   {\mathbf{V}^+})+\mu^+\nabla\times(\nabla \times
+   {\mathbf{V}^+})=F(\mathbf x,t),\quad x\in\setR, y>0.
+\f}\
+with the boundary conditions
+\f{eqnarray*}
+\dsp\derp{V_{y}^+}{y}=0 \hbox{ and }
+\dsp \derp{ V_{x}^+}{y} + \derp {V_{y}^+}{x} =0
+\quad x\in\setR, y=0.
+\f}
+<li> (Wall Boundary Condition)
+\f{eqnarray*}
+   \derp {^2 \mathbf{V}^+}{t^2}-(\lambda^++2\mu^+)
+   {\mathbf \nabla} (\nabla \cdot
+   {\mathbf{V}^+})+\mu^+\nabla\times(\nabla \times
+   {\mathbf{V}^+})=F(\mathbf x,t),\quad x\in\setR, y>0.
+\f}
+with the boundary condition
+\f{eqnarray*}
+   {\mathbf{V}^+}=0\quad x\in\setR, y=0.
+\f}
+
+
+<li> (Bilayered Medium)
+\f{eqnarray*}
+ \derp {^2 \mathbf{V}^+}{t^2}-(\lambda^++2\mu^+)
+   {\mathbf \nabla} (\nabla \cdot
+   {\mathbf{V}^+})+\mu^+\nabla\times(\nabla \times
+   {\mathbf{V}^+})=F(\mathbf x,t),\quad x\in\setR, y>0,\\[10pt]
+ \derp {^2 \mathbf{V}^-}{t^2}-(\lambda^-+2\mu^-)
+   {\mathbf \nabla} (\nabla \cdot
+   {\mathbf{V}^-})+\mu^-\nabla\times(\nabla \times
+   {\mathbf{V}^-})=0,\quad x\in\setR, y<0,
+\f}
+with the transmission conditions\\[10pt]
+<div align=center>
+<table> 
+<tr><td>\f$\dsp V^+=V^-\f$,</td></tr>
+<tr><td>\f$\dsp(\lambda^++2\mu^+)\derp{V_{y}^+}{y}=(\lambda^-+2\mu^-)\derp{V_{y}^-}{y}\f$,</td></tr> 
+<tr><td>\f$\dsp \mu^+\left(\derp{ V_{x}^+}{y} + \derp
+  {V_{y}^+}{x}\right)
+=\mu^-\left(\derp{ V_{x}^-}{y} + \derp
+  {V_{y}^-}{x}\right)
+,\quad x\in\setR, y=0.\f$</td></tr>
+</table>
+</div>
+Once again, if you want to compute the displacement \f$U\f$, it can be easily computed by replacing \f$f(t)\f$ by the primitive of the source function you are using.
+\section Poro Poroelastic (see \cite<Rap3>)
+The code computes a seismogram at point
+\f$(x_i,y)_{i=1,Nx}\f$ of the solid displacement \f$U_s\f$
+solution of the equations (in the following
+\f$\mathbf{x_s}=(0,h)\f$)
+<ul>
+<li> (Infinite Medium)
+\f[\hspace{-1cm} \begin{array}{lr}
+\!\!\!\!\left|
+  \begin{array}{l}
+\dsp  (1-\phi^+)\rho_s^+ \derp {^2
+  \mathbf U_s^+}{t^2}+\phi^+\rho_f^+\derp {^2
+  \mathbf U_f^+}{t^2}-\!(\lambda^++2\mu^+) \nabla (\nabla \cdot
+\mathbf U_s^+)\!+\!\mu^+\nabla\times(\nabla \times \mathbf U_s^+)+\beta^+\nabla P^+\!=\!\nabla\delta({\mathbf x}-\mathbf{x_s}) F_s(t)
+,\\[10pt]
+    \dsp  (1-a^+)\rho_f^+ \derp {^2
+  \mathbf U_s^+}{t^2}+a^+\rho_f^+\derp {^2
+  \mathbf U_f^+}{t^2}+\nabla P^+=\nabla\delta({\mathbf x}-\mathbf{x_s}) F_s(t)\\[10pt]
+\dsp \frac 1 {m^+} P^+ +(\beta^+-\phi^+) \nabla
+\cdot \mathbf U_s^++ \phi^+ \nabla \cdot \mathbf U_f^+=\delta({\mathbf x}-\mathbf{x_s}) F_p(t)
+  \end{array}
+\right. 
+\end{array}\f]
+for \f$(x,y)\in\setR^2.\f$
+Actually the code computes the solution for each
+source \f$F_s\f$ and \f$F_p\f$ separately. If you want a
+bulk source (\f$F_s\f$), set the parameter
+\f$\it type\_source\f$ to 1, if you want a pressure source
+(\f$F_p\f$), set the parameter
+\f$\it type\_source\f$ to 2. 
+<li> (Wall Boundary Condition)
+\f[\hspace{-1cm} \begin{array}{lr}
+\!\!\!\!\left|
+  \begin{array}{l}
+\dsp  (1-\phi^+)\rho_s^+ \derp {^2
+  \mathbf U_s^+}{t^2}+\phi^+\rho_f^+\derp {^2
+  \mathbf U_f^+}{t^2}-\!(\lambda^++2\mu^+) \nabla (\nabla \cdot
+\mathbf U_s^+)\!+\!\mu^+\nabla\times(\nabla \times \mathbf U_s^+)+\beta^+\nabla P^+\!=\!\nabla\delta({\mathbf x}-\mathbf{x_s}) F_s(t)
+,\\[10pt]
+    \dsp  (1-a^+)\rho_f^+ \derp {^2
+  \mathbf U_s^+}{t^2}+a^+\rho_f^+\derp {^2
+  \mathbf U_f^+}{t^2}+\nabla P^+=\nabla\delta({\mathbf x}-\mathbf{x_s}) F_s(t)\\[10pt]
+\dsp \frac 1 {m^+} P^+ +(\beta^+-\phi^+) \nabla
+\cdot \mathbf U_s^++ \phi^+ \nabla \cdot \mathbf U_f^+=\delta({\mathbf x}-\mathbf{x_s}) F_p(t)
+  \end{array}
+\right. 
+\end{array}\f]
+for \f$x\in\setR, y>0\f$,
+with the boundary conditions
+\f[U_{fy}^+-U_{sy}^+=0 \hbox{ and } U_{s}^+=0, \quad x\in\setR, y=0.\f]
+<li> (Free Boundary Condition)
+\f[\hspace{-1cm} \begin{array}{lr}
+\!\!\!\!\left|
+  \begin{array}{l}
+\dsp  (1-\phi^+)\rho_s^+ \derp {^2
+  \mathbf U_s^+}{t^2}+\phi^+\rho_f^+\derp {^2
+  \mathbf U_f^+}{t^2}-\!(\lambda^++2\mu^+) \nabla (\nabla \cdot
+\mathbf U_s^+)\!+\!\mu^+\nabla\times(\nabla \times \mathbf U_s^+)+\beta^+\nabla P^+\!=\!\nabla\delta({\mathbf x}-\mathbf{x_s}) F_s(t)
+,\\[10pt]
+    \dsp  (1-a^+)\rho_f^+ \derp {^2
+  \mathbf U_s^+}{t^2}+a^+\rho_f^+\derp {^2
+  \mathbf U_f^+}{t^2}+\nabla P^+=\nabla\delta({\mathbf x}-\mathbf{x_s}) F_s(t)\\[10pt]
+\dsp \frac 1 {m^+} P^+ +(\beta^+-\phi^+) \nabla
+\cdot \mathbf U_s^++ \phi^+ \nabla \cdot \mathbf U_f^+=\delta({\mathbf x}-\mathbf{x_s}) F_p(t)
+  \end{array}
+\right. 
+\end{array}\f]
+for \f$x\in\setR, y>0\f$,
+with the boundary conditions
+ \\[10pt]
+<div align=center>
+<table>
+<tr><td>\f$\dsp 
+\alpha^+\nabla\cdot \mathbf U_s^+
++2\mu^+\derp{U_{sy}^+}{y} + m^+\beta^+\phi^+\,\nabla\cdot \mathbf U_f^+=0,\f$</td></tr>
+<tr><td>\f$\dsp \derp{ U_{sx}^+}{y} + \derp {U_{sy}^+}{x}=0,\f$</td></tr>
+\f$ P^+=0,\f$ 
+</table> </div>
+for \f$x\in\setR, y=0\f$, with 
+\f[
+\alpha^\pm=\lambda^\pm+m^\pm\beta^\pm(\beta^\pm-\phi^\pm).
+\f]
+<li> (Bilayered Medium)
+\f[\hspace{-1cm} \begin{array}{lr}
+\!\!\!\!\left|
+  \begin{array}{l}
+\dsp  (1-\phi^+)\rho_s^+ \derp {^2
+  \mathbf U_s^+}{t^2}+\phi^+\rho_f^+\derp {^2
+  \mathbf U_f^+}{t^2}-\!(\lambda^++2\mu^+) \nabla (\nabla \cdot
+\mathbf U_s^+)\!+\!\mu^+\nabla\times(\nabla \times \mathbf U_s^+)+\beta^+\nabla P^+\!=\!\nabla\delta({\mathbf x}-\mathbf{x_s}) F_s(t)
+,\\[10pt]
+    \dsp  (1-a^+)\rho_f^+ \derp {^2
+  \mathbf U_s^+}{t^2}+a^+\rho_f^+\derp {^2
+  \mathbf U_f^+}{t^2}+\nabla P^+=\nabla\delta({\mathbf x}-\mathbf{x_s}) F_s(t)\\[10pt]
+\dsp \frac 1 {m^+} P^+ +(\beta^+-\phi^+) \nabla
+\cdot \mathbf U_s^++ \phi^+ \nabla \cdot \mathbf U_f^+=\delta({\mathbf x}-\mathbf{x_s}) F_p(t)
+  \end{array}
+\right. 
+\end{array}\f]
+for \f$x\in\setR, y>0\f$ and
+\f[\hspace{-1cm} \begin{array}{lr}
+\!\!\!\!\left|
+  \begin{array}{l}
+\dsp  (1-\phi^-)\rho_s^- \derp {^2
+  \mathbf U_s^-}{t^2}+\phi^-\rho_f^-\derp {^2
+  \mathbf U_f^-}{t^2}-(\lambda^-+2\mu^-) \nabla (\nabla \cdot
+\mathbf U_s^-)+\mu^-\nabla\times(\nabla \times \mathbf U_s^-)+\beta^-\nabla P^-=0
+,\\[10pt]
+    \dsp  (1-a^-)\rho_f^- \derp {^2
+  \mathbf U_s^-}{t^2}+a^-\rho_f^-\derp {^2
+  \mathbf U_f^-}{t^2}+\nabla P^-=0\\[10pt]
+\dsp \frac 1 {m^-} P^- +(\beta^--\phi^-) \nabla
+\cdot \mathbf U_s^-+ \phi^- \nabla \cdot \mathbf U_f^-=0
+  \end{array}
+\right. 
+\end{array}\f]
+for \f$x\in\setR, y<0\f$, with the transmission conditions on the interface \f$y=0\f$ 
+<div align=center>
+<table>
+<tr><td>\f$\phi^-\,(U_{fy}^--U_{sy}^-)=\phi^+\,(U_{fy}^+-U_{sy}^+),\f$</td></tr>
+<tr><td>\f$\dsp \alpha^-\nabla\cdot \mathbf U_s^-
++2\mu^-\derp{ U_{sy}^-}{y}+m^-\beta^-\phi^-\,\nabla\cdot \mathbf U_f^-=
+\alpha^+\nabla\cdot \mathbf U_s^+
++2\mu^+\derp{U_{sy}^+}{y} + m^+\beta^+\phi^+\,\nabla\cdot \mathbf U_f^+,\f$</td></tr>
+<tr><td>\f$\dsp \mu^-(\derp {U_{sx}^-}{y}+\derp{U_{sy}}{x}^-)=
+\mu^+(\derp{ U_{sx}^+}{y} + \derp {U_{sy}^+}{x}),\f$</td></tr>
+<tr><td>\f$U_{sx}^-=U_{sx}^+,\quad  U_{sy}^-=U_{sy}^+,\quad P^-=P^+,\f$</td></tr>
+</table>
+</div> 
+with 
+\f[
+\alpha^\pm=\lambda^\pm+m^\pm\beta^\pm(\beta^\pm-\phi^\pm).
+\f]
+</ul>
+<b>Remark</b>
+<div align=justify>
+  The code does not really compute the
+  displacement, but its derivative (for some reasons
+  related to the Cagniard-de Hoop method,
+  see~\cite ezziani_th \cite Rap3). Therefore, you have to
+  replace \f$f(t)\f$ by the primitive of the source
+  function you are using to compute the displacement. 
+</div>
+@section Install
+blabla sur l'installation
+
+@section Usage
+
+blabla sur l'utilisation
+**/

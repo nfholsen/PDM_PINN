@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Xdmf SYSTEM "Xdmf.dtd" []>
+<Xdmf Version="2.0">
+  <Domain>
+    <Grid Name="Salvus GLL Model" GridType="Uniform">
+      <Topology TopologyType="Quadrilateral" NodesPerElement="4" NumberOfElements="441">
+        <DataItem Format="HDF" Dimensions="441 4" NumberType="Int">coupled_fluid_mesh.h5:/MODEL/sub_connectivity</DataItem>
+      </Topology>
+      <Geometry GeometryType="XY">
+        <DataItem Format="HDF" Dimensions="1764 2">coupled_fluid_mesh.h5:/MODEL/coordinates</DataItem>
+      </Geometry>
+    </Grid>
+  </Domain>
+</Xdmf>

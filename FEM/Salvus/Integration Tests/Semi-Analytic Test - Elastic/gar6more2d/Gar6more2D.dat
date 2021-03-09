@@ -1,0 +1,39 @@
+4
+2
+15 Central frequency of the source 
+1 Amplitude of the bulk source source (fu)
+1 Amplitude of the pressure source (fp)
+0.08  Delay of the source
+2780. Height of the source
+1735 Height of the line of receivers
+8914 Abscissa of the first receiver
+8914 Abscissa of the last receiver
+1 Numbers of receivers
+0. Start time
+13.5 Stop time
+1.7000000E-03 Time step
+2000 Number of intervals for the numerical computation of the convolution
+0.22e10  0.52e10  0.25e10 0.24e10 1040 2250 0.25 2  Frame bulk modulus, Solid bulk modulus, Fluid bulk modulus, Frame shear modulus, Fluid density, Solid density, Porosity and Tortuosity
+2 porous
+3.7e10  8.00e10  0.25e10 2.61e10 1040 2500 0.5 2  Frame bulk modulus, Solid bulk modulus, Fluid bulk modulus, Frame shear modulus, Fluid density, Solid density, Porosity and Tortuosity
+1 Bulk source (1) or pressure source (2) or combination (3) linearly partitioned
+0 Open pore (1) or sealed pore (0) transmission condition (only useful for fluid/porous coupling)
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Examples of media
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+0 acoustic
+2250000000 1000 mu and rho
+0 acoustic
+2.295e9 1020 mu and rho
+0 acoustic
+2.56e6 1 mu and rho
+1 elastodynamic
+5994000000 17612000000 1850 mu, lambda and rho
+2 poroelastic
+6.7e9  6.9e9  2.e9 3.e9 950 2200 0.4 2 % Frame bulk modulus, Solid bulk modulus, Fluid bulk modulus, Frame shear modulus, Fluid density, Solid density, Porosity and Tortuosity
+2 poroelastic
+10.0e9 1.60554e10 2.295e9 9.63342e9 1020 2500 0.4 2 % Frame bulk modulus, Solid bulk modulus, Fluid bulk modulus, Frame shear modulus, Fluid density, Solid density, Porosity and Tortuosity
+2 poroelastic
+2.2e9 3.7e10 1.7e9 4.4e9 750 2650 0.2 2 % Frame bulk modulus, Solid bulk modulus, Fluid bulk modulus, Frame shear modulus, Fluid density, Solid density, Porosity and Tortuosity

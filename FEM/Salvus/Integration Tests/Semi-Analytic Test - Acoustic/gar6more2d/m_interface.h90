@@ -1,0 +1,165 @@
+!! Copyright INRIA. Contributors : Julien DIAZ and Abdelaaziz EZZIANI
+!! 
+!! Julien.Diaz@inria.fr and Abdelaaziz.Ezziani@univ-pau.fr
+!! 
+!! This software is a computer program whose purpose is to
+!! compute the analytical solution of problems of waves propagation in two 
+!! layered media such as
+!! - acoustic/acoustic
+!! - acoustic/elastodynamic
+!! - acoustic/porous
+!! - porous/porous,
+!! based on the Cagniard-de Hoop method.
+!! 
+!! This software is governed by the CeCILL license under French law and
+!! abiding by the rules of distribution of free software.  You can  use, 
+!! modify and/ or redistribute the software under the terms of the CeCILL
+!! license as circulated by CEA, CNRS and INRIA at the following URL
+!! "http://www.cecill.info". 
+!! 
+!! As a counterpart to the access to the source code and  rights to copy,
+!! modify and redistribute granted by the license, users are provided only
+!! with a limited warranty  and the software's author,  the holder of the
+!! economic rights,  and the successive licensors  have only  limited
+!! liability. 
+!! 
+!! In this respect, the user's attention is drawn to the risks associated
+!! with loading,  using,  modifying and/or developing or reproducing the
+!! software by the user in light of its specific status of free software,
+!! that may mean  that it is complicated to manipulate,  and  that  also
+!! therefore means  that it is reserved for developers  and  experienced
+!! professionals having in-depth computer knowledge. Users are therefore
+!! encouraged to load and test the software's suitability as regards their
+!! requirements in conditions enabling the security of their systems and/or 
+!! data to be ensured and,  more generally, to use and operate it in the 
+!! same conditions as regards security. 
+!! 
+!! The fact that you are presently reading this means that you have had
+!! knowledge of the CeCILL license and that you accept its terms.
+!! ========================================================================
+
+  interface
+
+!... Renvoit source(t) ...................................
+     function source(t)
+  Use m_source
+  Use m_const
+  implicit none
+  real*8,intent(in) :: t
+  real*8 :: source
+  real*8 :: alpha,t1,t0
+     end function source 
+
+function arrivaltime(h,x,y,V1,V2)
+implicit none
+real*8,intent(in) ::h,x,y,V1,V2
+real*8 :: arrivaltime,alpha,Rwork(8)
+complex*16 :: Mat(4,4),Eig(4),Work(100)
+integer :: LWork,Info
+end function arrivaltime
+function path(x,y,h,V1,V2,t)
+  Use m_const
+implicit none
+real*8,intent(in) ::h,x,y,V1,V2,t
+real*8 :: alpha,Rwork(8),zz(4),delta,test(4)
+complex*16 :: Mat(4,4),Eig(4),Work(100),path
+integer ::Info,k,ii
+end function path
+function derivee(x,y,h,V1,V2,pp)
+  Use m_const
+implicit none
+real*8,intent(in) ::h,x,y,V1,V2
+complex*16,intent(in)  :: pp
+complex*16 :: derivee
+end function derivee
+function calccoeff_ap(pp)
+  Use m_const
+  Use m_phys
+implicit none
+complex*16,intent(in) :: pp
+integer ::Info,IPIV(4)
+complex*16 :: k1,kf1,ks2,kpsi2
+complex*16 :: Mat(4,4),coeff(4),calccoeff_ap(4)
+real*8 :: X(2)
+end function calccoeff_ap
+function calccoefff_pp(pp)
+  Use m_const
+  Use m_phys
+implicit none
+complex*16,intent(in) :: pp
+integer ::Info,IPIV(6)
+complex*16 :: kf1,ks1,kpsi1,kf2,ks2,kpsi2, X(2)
+complex*16 :: Mat(6,6),coeff(6),calccoefff_pp(6)
+end function calccoefff_pp
+function calccoeffs_pp(pp)
+  Use m_const
+  Use m_phys
+implicit none
+complex*16,intent(in) :: pp
+integer ::Info,IPIV(6)
+complex*16 :: kf1,ks1,kpsi1,kf2,ks2,kpsi2, X(2)
+complex*16 :: Mat(6,6),coeff(6),calccoeffs_pp(6)
+end function calccoeffs_pp
+
+
+function calccoeffS_ee(pp)
+  Use m_const
+  Use m_phys
+implicit none
+complex*16,intent(in) :: pp
+integer ::Info,IPIV(4)
+complex*16 :: kf1,ks1,kpsi1,kf2,ks2,kpsi2
+complex*16 :: Mat(4,4),coeff(4),calccoeffS_ee(4),X(2)
+end function calccoeffS_ee
+
+function calccoeffP_ee(pp)
+  Use m_const
+  Use m_phys
+implicit none
+complex*16,intent(in) :: pp
+integer ::Info,IPIV(4)
+complex*16 :: kf1,ks1,kpsi1,kf2,ks2,kpsi2
+complex*16 :: Mat(4,4),coeff(4),calccoeffP_ee(4),X(2)
+end function calccoeffP_ee
+
+function calccoeffs_free_pp(pp)
+  Use m_const
+  Use m_phys
+implicit none
+complex*16,intent(in) :: pp
+integer ::Info,IPIV(3)
+complex*16 :: kf1,ks1,kpsi1,kf2,ks2,kpsi2,X(2)
+complex*16 :: Mat(3,3),coeff(3),calccoeffs_free_pp(3),coeff1(3)
+end function calccoeffs_free_pp
+
+function calccoefff_free_pp(pp)
+  Use m_const
+  Use m_phys
+implicit none
+complex*16,intent(in) :: pp
+integer ::Info,IPIV(3)
+complex*16 :: kf1,ks1,kpsi1,kf2,ks2,kpsi2
+complex*16 :: Mat(3,3),coeff(3),coeff1(3),calccoefff_free_pp(3),X(2)
+end function calccoefff_free_pp
+
+function calccoeffs_wall_pp(pp)
+  Use m_const
+  Use m_phys
+implicit none
+complex*16,intent(in) :: pp
+integer ::Info,IPIV(3)
+complex*16 :: kf1,ks1,kpsi1
+complex*16 :: Mat(3,3),coeff(3),calccoeffs_wall_pp(3),X(2)
+end function calccoeffs_wall_pp
+
+function calccoefff_wall_pp(pp)
+  Use m_const
+  Use m_phys
+implicit none
+complex*16,intent(in) :: pp
+integer ::Info,IPIV(3)
+complex*16 :: kf1,ks1,kpsi1
+complex*16 :: Mat(3,3),coeff(3),calccoefff_wall_pp(3),X(2)
+end function calccoefff_wall_pp
+
+end interface

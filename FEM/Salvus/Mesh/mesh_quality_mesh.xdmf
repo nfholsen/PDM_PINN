@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Xdmf SYSTEM "Xdmf.dtd" []>
+<Xdmf Version="2.0">
+  <Domain>
+    <Grid Name="Salvus GLL Model" GridType="Uniform">
+      <Topology TopologyType="Quadrilateral" NodesPerElement="4" NumberOfElements="300">
+        <DataItem Format="HDF" Dimensions="300 4" NumberType="Int">mesh_quality_mesh.h5:/MODEL/sub_connectivity</DataItem>
+      </Topology>
+      <Geometry GeometryType="XY">
+        <DataItem Format="HDF" Dimensions="1200 2">mesh_quality_mesh.h5:/MODEL/coordinates</DataItem>
+      </Geometry>
+    </Grid>
+  </Domain>
+</Xdmf>

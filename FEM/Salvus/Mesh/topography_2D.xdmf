@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Xdmf SYSTEM "Xdmf.dtd" []>
+<Xdmf Version="2.0">
+  <Domain>
+    <Grid Name="Salvus GLL Model" GridType="Uniform">
+      <Topology TopologyType="Quadrilateral" NodesPerElement="4" NumberOfElements="53420">
+        <DataItem Format="HDF" Dimensions="53420 4" NumberType="Int">topography_2D.h5:/MODEL/sub_connectivity</DataItem>
+      </Topology>
+      <Geometry GeometryType="XY">
+        <DataItem Format="HDF" Dimensions="120195 2">topography_2D.h5:/MODEL/coordinates</DataItem>
+      </Geometry>
+      <Attribute Name="RHO" Center="Node" AttributeType="Scalar">
+        <DataItem ItemType="HyperSlab" Type="HyperSlab" Dimensions="120195 1">
+          <DataItem Dimensions="3 3">0 0 0 1 1 1 13355 1 9</DataItem>
+          <DataItem Format="HDF" Dimensions="13355 3 9">topography_2D.h5:/MODEL/data</DataItem>
+        </DataItem>
+      </Attribute>
+      <Attribute Name="VP" Center="Node" AttributeType="Scalar">
+        <DataItem ItemType="HyperSlab" Type="HyperSlab" Dimensions="120195 1">
+          <DataItem Dimensions="3 3">0 1 0 1 1 1 13355 1 9</DataItem>
+          <DataItem Format="HDF" Dimensions="13355 3 9">topography_2D.h5:/MODEL/data</DataItem>
+        </DataItem>
+      </Attribute>
+      <Attribute Name="VS" Center="Node" AttributeType="Scalar">
+        <DataItem ItemType="HyperSlab" Type="HyperSlab" Dimensions="120195 1">
+          <DataItem Dimensions="3 3">0 2 0 1 1 1 13355 1 9</DataItem>
+          <DataItem Format="HDF" Dimensions="13355 3 9">topography_2D.h5:/MODEL/data</DataItem>
+        </DataItem>
+      </Attribute>
+    </Grid>
+  </Domain>
+</Xdmf>

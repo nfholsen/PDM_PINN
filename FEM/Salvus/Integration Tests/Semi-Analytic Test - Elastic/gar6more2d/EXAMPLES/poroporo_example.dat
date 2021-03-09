@@ -1,0 +1,18 @@
+2 infinite medium (1), free surface (2), wall boundary (3) or bilayered medium(4)
+2 first layer : acoustic (0) elastodynamic (1), poroelastic (2)
+100000 Central frequency of the source 
+1 Amplitude of the bulk source source (fu)
+0 Amplitude of the pressure source (fp)
+1.5e-5    Delay of the source
+0.5 Height of the source
+0. Height of the line of receivers
+1  Abscissa of the first receiver
+1.0  Abscissa of the last receiver
+1 Numbers of receivers
+0. Start time
+9e-4 Stop time
+2e-7 Time step
+4000 Number of intervals for the numerical computation of the convolution
+6.1e9  4.99e10  2.25e9 3.4e9 1000 2480 0.38 1.8  Frame bulk modulus, Solid bulk modulus, Fluid bulk modulus, Frame shear modulus, Fluid density, Solid density, Porosity and Tortuosity
+2 second layer : acoustic (0) elastodynamic (1), poroelastic (2)
+10.0e9 1.60554e10 2.295e9 9.63342e9 1020 2500 0.4 2 % Frame bulk modulus, Solid bulk modulus, Fluid bulk modulus, Frame shear modulus, Fluid density, Solid density, Porosity and Tortuosity

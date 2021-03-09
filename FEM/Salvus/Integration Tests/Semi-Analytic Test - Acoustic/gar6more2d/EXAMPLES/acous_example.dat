@@ -1,0 +1,15 @@
+2 infinite medium (1), free surface (2), wall boundary (3) or bilayered medium(4)
+0 first layer : acoustic (0) elastodynamic (1), poroelastic (2)
+100000 Central frequency of the source 
+1 Amplitude of the source
+1.5e-5   Delay of the source
+0.02 Height of the source
+0.02 Height of the line of receivers
+0.01  Abscissa of the first receiver
+0.01  Abscissa of the last receiver
+1 Numbers of receivers
+0. Start time
+5e-4 Stop time
+2e-7 Time step
+2000 Number of intervals for the numerical computation of the convolution
+2.25e9 1000 mu and rho
