@@ -1,0 +1,109 @@
+-----------------------------------------------------------------------
+                   Gar6more2D   V E R S I O N  2.0
+----------------------------------------------------------------------- 
+
+Latest update:   Thu Feb. 11  2015
+
+
+Copyright INRIA. Contributors: Julien DIAZ and Abdelaaziz EZZIANI
+
+Julien.Diaz@inria.fr and Abdelaaziz.Ezziani@univ-pau.fr
+
+This software is a computer program whose purpose is to
+compute the analytical solution of problems of waves propagation in two 
+layered media in 2D such as
+- acoustic/acoustic
+- acoustic/elastodynamic
+- acoustic/porous
+- elastodynamic/elastodynamic
+- porous/porous,
+based on the Cagniard-de Hoop method.
+
+This software is governed by the CeCILL license under French law and
+abiding by the rules of distribution of free software.  You can  use, 
+modify and/ or redistribute the software under the terms of the CeCILL
+license as circulated by CEA, CNRS and INRIA at the following URL
+"http://www.cecill.info". 
+
+As a counterpart to the access to the source code and  rights to copy,
+modify and redistribute granted by the license, users are provided only
+with a limited warranty  and the software's author,  the holder of the
+economic rights,  and the successive licensors  have only  limited
+liability. 
+
+In this respect, the user's attention is drawn to the risks associated
+with loading,  using,  modifying and/or developing or reproducing the
+software by the user in light of its specific status of free software,
+that may mean  that it is complicated to manipulate,  and  that  also
+therefore means  that it is reserved for developers  and  experienced
+professionals having in-depth computer knowledge. Users are therefore
+encouraged to load and test the software's suitability as regards their
+requirements in conditions enabling the security of their systems and/or 
+data to be ensured and,  more generally, to use and operate it in the 
+same conditions as regards security. 
+
+The fact that you are presently reading this means that you have had
+knowledge of the CeCILL license and that you accept its terms.
+
+------------------------------------------------------------------------
+                      Gar6more2D   VERSION 2.0 
+------------------------------------------------------------------------
+1) mkdir build 
+2) cd build/ ; ccmake .. ; make all
+3) Modify the file Gar6more2D.dat (you may find examples in the directory EXAMPLES)
+4) Run ./build/Gar6more2D.out
+5) The results are stored in the files Ux.dat, Uy.dat and P.dat.
+
+------------------------------------------------------------------------
+                      Short Description of the code
+------------------------------------------------------------------------
+I) The main program is lib/bin/Gar6more2D.F90.
+
+II) The directory mod/ contains all files for the
+declaration of the common variables.
+
+III) The directory lib/libgeneral contains
+functions used by most of the subroutines : the
+source function source.F90, the computation of the
+path in the complex plane path.F90, the
+computation of the derivate dp/dt derivee.F90.
+
+IV) The directory includefic contains the interface files.
+
+V) The directory lib/acousacous contains the
+subroutines for the computation of the incident
+wave (sub_incid_aa.F90), the reflected wave
+(sub_reflex_*_aa.F90) and the transmitted wave
+(sub_transmit_*_aa.F90) in the acoustic/acoustic
+case.
+
+VI) The directory lib/acouselasto contains the
+subroutines for the computation of the incident
+wave (sub_incid_ae.F90), the reflected wave
+(sub_reflex_ae.F90), the transmitted P wave
+(sub_transmitp_ae.F90) and the transmitted S wave
+(sub_transmits_ae.F90) in the
+acoustic/elastodynamic case.
+
+VII) The directory lib/acousporo contains the
+subroutines for the computation of the incident
+wave (sub_incid_ap.F90), the reflected wave
+(sub_reflex_ap.F90), the transmitted fast wave
+(sub_transmitf_ap.F90), the transmitted psi wave
+(sub_transmitpsi_ap.F90) and the transmitted slow
+wave (sub_transmits_ap.F90) in the
+acoustic/poroelastic case.
+The computation of the reflection and transmission coefficients is performed by calccoeff_ap.F90  
+
+VIII) The directory lib/elastoelasto contains the
+subroutines for the computation of the incident
+waves (sub_incid*_ee.F90), the reflected waves
+(sub_reflex*_*_ee.F90) and the transmitted waves
+(sub_transmit*_ee.F90) in the 
+elastodynamic/elastodynamic case.
+The computation of the reflection and transmission coefficients (for P and S waves) is performed by calccoeff*_ee.F90.
+
+IX) The directory lib/poroporo contains the subroutines for the computation 
+of the incident waves (sub_incid_pp_*.F90), the reflected waves 
+(sub_reflex*_*_pp.F90) and the transmitted waves (sub_transmit*_*_pp.F90) in the 
+poroelastic/poroelastic case.

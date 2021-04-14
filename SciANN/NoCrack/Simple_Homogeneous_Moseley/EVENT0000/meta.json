@@ -1,0 +1,219 @@
+{
+    "run_statistics": {
+        "salvus_version": "0.11.27",
+        "runtime_in_seconds": 138.182716,
+        "start_time": "2021-04-07T12:33:11Z",
+        "end_time": "2021-04-07T12:35:30Z",
+        "working_directory": "/home/nolsen/salvus_data/run_directory/job_2104071433255857_47c6f61ba8",
+        "number_of_ranks": 2
+    },
+    "machine_statistics": {
+        "username": "nolsen",
+        "hostname": "LAPTOP-154DU0LI",
+        "working_directory": "/home/nolsen/salvus_data/run_directory/job_2104071433255857_47c6f61ba8",
+        "operating_system": "Linux",
+        "compile_time_mpi_version": "3.1",
+        "run_time_mpi_version": "3.1",
+        "cpu_statistics": {
+            "architecture": "X86",
+            "brand_string": "Intel(R) Core(TM) i7-7820HQ CPU @ 2.90GHz",
+            "family": 6,
+            "model": 158,
+            "stepping": 9,
+            "architecture": "X86",
+            "microarchitecture": "INTEL_KBL",
+            "feature_flags": [
+                "fpu",
+                "tsc",
+                "cx8",
+                "clfsh",
+                "mmx",
+                "aes",
+                "erms",
+                "f16c",
+                "fma3",
+                "bmi1",
+                "hle",
+                "bmi2",
+                "rtm",
+                "rdseed",
+                "clflushopt",
+                "sse",
+                "sse2",
+                "sse3",
+                "ssse3",
+                "sse4_1",
+                "sse4_2",
+                "avx",
+                "avx2",
+                "pclmulqdq",
+                "cx16",
+                "popcnt",
+                "movbe",
+                "rdrnd",
+                "ss"
+            ]
+        }
+    },
+    "forward_run_input": {
+        "domain": {
+            "dimension": 2,
+            "geometry": {
+                "filename": "/home/nolsen/salvus_data/run_directory/job_2104071433255857_47c6f61ba8/input/mesh.h5",
+                "format": "hdf5"
+            },
+            "mesh": {
+                "filename": "/home/nolsen/salvus_data/run_directory/job_2104071433255857_47c6f61ba8/input/mesh.h5",
+                "format": "hdf5"
+            },
+            "model": {
+                "filename": "/home/nolsen/salvus_data/run_directory/job_2104071433255857_47c6f61ba8/input/mesh.h5",
+                "format": "hdf5"
+            },
+            "polynomial_order": 4
+        },
+        "output": {
+            "meta_data": {
+                "meta_json_filename": "/home/nolsen/salvus_data/run_directory/job_2104071433255857_47c6f61ba8/output/meta.json",
+                "progress_json_filename": "/home/nolsen/salvus_data/run_directory/job_2104071433255857_47c6f61ba8/output/progress.json"
+            },
+            "point_data": {
+                "filename": "/home/nolsen/salvus_data/run_directory/job_2104071433255857_47c6f61ba8/output/receivers.h5",
+                "format": "hdf5",
+                "receiver": [
+                    {
+                        "fields": [
+                            "phi"
+                        ],
+                        "location": [
+                            500.0,
+                            1500.0
+                        ],
+                        "location_code": "",
+                        "network_code": "XX",
+                        "station_code": "000"
+                    },
+                    {
+                        "fields": [
+                            "phi"
+                        ],
+                        "location": [
+                            1000.0,
+                            1500.0
+                        ],
+                        "location_code": "",
+                        "network_code": "XX",
+                        "station_code": "001"
+                    },
+                    {
+                        "fields": [
+                            "phi"
+                        ],
+                        "location": [
+                            1500.0,
+                            1000.0
+                        ],
+                        "location_code": "",
+                        "network_code": "XX",
+                        "station_code": "002"
+                    },
+                    {
+                        "fields": [
+                            "phi"
+                        ],
+                        "location": [
+                            1500.0,
+                            500.0
+                        ],
+                        "location_code": "",
+                        "network_code": "XX",
+                        "station_code": "003"
+                    },
+                    {
+                        "fields": [
+                            "phi"
+                        ],
+                        "location": [
+                            1000.0,
+                            0.0
+                        ],
+                        "location_code": "",
+                        "network_code": "XX",
+                        "station_code": "004"
+                    },
+                    {
+                        "fields": [
+                            "phi"
+                        ],
+                        "location": [
+                            500.0,
+                            0.0
+                        ],
+                        "location_code": "",
+                        "network_code": "XX",
+                        "station_code": "005"
+                    },
+                    {
+                        "fields": [
+                            "phi"
+                        ],
+                        "location": [
+                            0.0,
+                            500.0
+                        ],
+                        "location_code": "",
+                        "network_code": "XX",
+                        "station_code": "006"
+                    },
+                    {
+                        "fields": [
+                            "phi"
+                        ],
+                        "location": [
+                            0.0,
+                            1000.0
+                        ],
+                        "location_code": "",
+                        "network_code": "XX",
+                        "station_code": "007"
+                    }
+                ],
+                "sampling_interval_in_time_steps": 1
+            },
+            "volume_data": {
+                "fields": [
+                    "phi"
+                ],
+                "filename": "/home/nolsen/salvus_data/tmp_directory/job_2104071433255857_47c6f61ba8/output.h5",
+                "format": "hdf5",
+                "sampling_interval_in_time_steps": 10
+            }
+        },
+        "physics": {
+            "wave_equation": {
+                "attenuation": false,
+                "courant_number": 0.6,
+                "end_time_in_seconds": 0.4,
+                "point_source": [
+                    {
+                        "location": [
+                            750.0,
+                            750.0
+                        ],
+                        "source_time_function": {
+                            "center_frequency": 20.0,
+                            "wavelet": "ricker"
+                        },
+                        "spatial_type": "scalar",
+                        "spatial_weights": [
+                            1.0
+                        ]
+                    }
+                ],
+                "start_time_in_seconds": 0.0,
+                "time_step_in_seconds": 0.0002,
+                "time_stepping_scheme": "newmark"
+            }
+        }
+    }
+}
