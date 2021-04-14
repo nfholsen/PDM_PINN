@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import h5py
+import os 
 
 import torch
 import torch.nn as nn
@@ -16,7 +17,12 @@ from model import *
 model_name = 'Moseley_PINN_1000.pt'
 
 # Load Salvus data
-path = "../NoCrack/Simple_Homogeneous_Moseley/Event0000/output.h5"
+homedir = os.path.expanduser('~')
+folderdir = homedir + '/Documents/PDM/PDM_PINN/SciANN/'
+path = folderdir + "NoCrack/Simple_Homogeneous_Moseley/EVENT0000/output.h5"
+
+print(path)
+
 hf = h5py.File(path, 'r')
 
 # Train set
@@ -103,7 +109,7 @@ def train(model,X_train,y_train,loss_fn,optimizer,epoch):
             loss.backward()
             optimizer.step()
 
-            epoch_loss += loss
+            epoch_loss += loss.data.item()
 
         tot_loss.append(epoch_loss)
 
