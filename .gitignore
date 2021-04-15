@@ -13,6 +13,7 @@ __pycache__/
 *.dat
 *.pickle
 *.pt
+*.tiff
 
 # C extensions
 *.so
