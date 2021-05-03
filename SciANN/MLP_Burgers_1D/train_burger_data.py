@@ -7,6 +7,12 @@ from model_burger_pinn import *
 
 import scipy.io # To load the matrix
 import numpy as np
+import os
+import json
+import copy
+
+import warnings
+warnings.filterwarnings("ignore")
 
 # # # CUDA support 
 if torch.cuda.is_available():
@@ -38,20 +44,20 @@ class u_Dataset(Dataset):
 # # # Parameters
 nu = 0.01/np.pi
 
-N_u_vec = [50,100,200,500,1000,2000,5000,10000]
+N_u_vec = [0,50,100,200,500,1000,2000,5000,10000]
 N_f = 0
-
-# Epoch
-epoch = 50000
 
 # Load data 
 data = scipy.io.loadmat('burgers_shock.mat')
 
 for N_u in N_u_vec:
+
+    # Epoch
+    epoch = 50000
     
     # Model name
-    dir_save = 'PINN/'
-    model_name = f'B_E{epoch}_U{N_u}_F{N_f}.pt'
+    dir_save = 'DATA/'
+    model_name = f'B_E{epoch}_U{N_u}_F{N_f}'
 
     print("\n\tModel Name : {}\n".format(model_name))
 
@@ -97,10 +103,24 @@ for N_u in N_u_vec:
     # Create datasets and dataloaders
     u_dataset = u_Dataset(X_u_train,u_train)
 
-    u_trainloader = DataLoader(u_dataset, batch_size=int(N_u/10), shuffle=True, num_workers=0)
+    batch_size = 100 if int(N_u/10) == 0 else int(N_u/10)
+
+    u_trainloader = DataLoader(u_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
 
     # # # Set up PINN model
     dnn = Model(in_size=2,neurons_layer=[20,20,20,20,20,20],out_size=1)
+
+    # Check if file exists - if true then the training was aborted and we need to load the file with the existing model parameters and the remaining number of training iteration
+    if os.path.isfile(dir_save + model_name): 
+        checkpoint = torch.load(dir_save + model_name)
+        dnn.load_state_dict(checkpoint['model_state_dict'])
+
+        epoch = epoch - checkpoint['epoch']
+
+        print('\n\tRemaining epoch :',epoch)
+    else:
+        print('\n\tRemaining epoch :',epoch)
+
     dnn = dnn.to(device)
 
     optimizer = torch.optim.Adam(dnn.parameters(), lr=1e-4)
@@ -110,7 +130,9 @@ for N_u in N_u_vec:
     pinn_loss = nn.MSELoss()
 
     # # # Training
-    tot_loss = []
+    tot_loss = [] # list to store all the losses
+
+    best_loss = 1e3 # Initial best loss
 
     for i in range(epoch):
         dnn.train()
@@ -118,9 +140,10 @@ for N_u in N_u_vec:
         epoch_loss = 0
 
         for X_u, u in u_trainloader:
-
-            x_u = torch.tensor(X_u[:, 0:1],requires_grad=True).float().to(device)
-            t_u = torch.tensor(X_u[:, 1:2],requires_grad=True).float().to(device)
+            
+            X_u.requires_grad = True
+            x_u = torch.tensor(X_u[:, 0:1]).float().to(device)
+            t_u = torch.tensor(X_u[:, 1:2]).float().to(device)
 
             u = torch.tensor(u).float().to(device)     
 
@@ -139,9 +162,23 @@ for N_u in N_u_vec:
 
         tot_loss.append(epoch_loss)
 
+        if epoch_loss < best_loss:
+            best_loss = epoch_loss
+            best_dnn = copy.deepcopy(dnn)
+
         if i % 100 == 0:
             print('Iter %d, Loss: %.3e' % (i,epoch_loss))
+        
+        if i % 1000 == 0:
+            print('Saving model')
+            PATH = dir_save + model_name + '.pt'
+            torch.save({'epoch':i,'model_state_dict':best_dnn.state_dict()}, PATH)
+
 
     # # # Save model 
-    PATH = dir_save + model_name
-    torch.save(dnn.state_dict(), PATH)
+    PATH = dir_save + model_name + '.pt'
+    torch.save(best_dnn.state_dict(), PATH)
+
+    # # # Save list losses
+    with open(PATH + '.txt', 'w') as f:
+        json.dump(tot_loss, f)
