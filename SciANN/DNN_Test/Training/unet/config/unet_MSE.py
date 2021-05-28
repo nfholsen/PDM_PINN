@@ -1,6 +1,8 @@
 import sys
 
-sys.path.append('C:/Users/nilso/Documents/EPFL/PDM/PDM_PINN/SciANN/DNN_TEST/sys/')
+sys.path.append('C:/Users/nils/Documents/PDM_PINN/SciANN/DNN_TEST/sys/')
+#sys.path.append('C:/Users/nilso/Documents/EPFL/PDM/PDM_PINN/SciANN/DNN_TEST/sys/')
+
 
 from loss import *
 from unet import UNet
@@ -19,12 +21,12 @@ else:
 # # # Config # # # 
 ##################
 
-epochs = 500
-batch_size = 2
+epochs = 5000
+batch_size = 4
 
 # Data
-data_dir = '../../../Simple_Homogeneous_Moseley/'
-data_csv = '../../../Simple_Homogeneous_Moseley_Event0000_Continuous.csv'
+data_dir = '../../../Training_Data/Moseley_Homogeneous/'
+data_csv = '../../../Training_Data/Moseley_Homogeneous_Event0000_Continuous.csv'
 
 # Paths
 save_dir = '../results/'
@@ -32,10 +34,12 @@ save_pt_best = f'Best_L2_E{epochs}.pt'
 save_pt = f'L2_E{epochs}.pt'
 save_txt = f'L2_E{epochs}.yml'
 
+event = 'Event0000'
+
 checkpoint_path= f'checkpoint_L2_E{epochs}.pt'
 
 # # # Data
-training_data = dataset(data_dir,data_csv)
+training_data = dataset(data_dir,data_csv,event=event)
 train_loader = DataLoader(training_data, batch_size=batch_size, shuffle=True)
 
 net = UNet(in_channels=4,out_channels=1)
@@ -58,7 +62,7 @@ file_handler.setFormatter(logging.Formatter('%(asctime)s | %(levelname)s | %(mes
 logger.addHandler(file_handler)
 
 class UNetModel(BaseModel):
-    def __init__(self, net, opt=None, sched=None, logger=None, print_progress=True, device='cuda:0'):
+    def __init__(self, net, opt=None, sched=None, logger=None, print_progress=False, device='cuda:0'):
         """
 
         """
@@ -82,7 +86,7 @@ class UNetModel(BaseModel):
         return loss[0], {'Loss':loss[0], 'Loss MSE':loss[1]} #,'Loss MSE':loss[1],'Loss GDL':loss[2],'Loss MAE':loss[3]} # Elements in the dict : only for printing
 
 # Create the model
-model = UNetModel(net, opt=optimizer, sched=None, logger=None, print_progress=True, device=device)
+model = UNetModel(net, opt=optimizer, sched=None, logger=None, print_progress=False, device=device)
 
 # Train the model
 model.train(epochs, train_loader, checkpoint_path=checkpoint_path, checkpoint_freq=5, save_best='Loss')

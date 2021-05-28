@@ -5,11 +5,17 @@ from torchvision import transforms
 from torch.utils.data import Dataset, DataLoader
 
 class dataset(Dataset):
-    def __init__(self, dir_path, csv_file):
+    def __init__(self, dir_path, csv_file, event, velocity_field=None):
         super(dataset, self).__init__()
 
         self.dir_path = dir_path
         self.csv_file = pd.read_csv(csv_file,index_col=0)
+        self.event = event
+
+        self.velocity_field = velocity_field # Path to velocity field
+
+        if self.velocity_field:
+            self.velocity_field_values = np.load(self.velocity_field)
 
         self.output = self.csv_file['y_number']
 
@@ -25,14 +31,18 @@ class dataset(Dataset):
         # Get the indice for the output wavefield
         self.output_im = self.output.astype(int)[index]
 
-        inputs = [cv2.imread(self.dir_path + f'Simple_Homogeneous_Moseley_Event0000_{im}.tiff',cv2.IMREAD_UNCHANGED) for im in range(self.output_im-4,self.output_im)]
+        inputs = [cv2.imread(self.dir_path + f'{self.event}_{im}.tiff',cv2.IMREAD_UNCHANGED).T for im in range(self.output_im-4,self.output_im)]
+
+        if self.velocity_field:
+            inputs.append(self.velocity_field_values.T)
+        
         #print(list(im for im in range(self.output_im-4,self.output_im))) # For debugging
 
-        outputs = [cv2.imread(self.dir_path + f'Simple_Homogeneous_Moseley_Event0000_{im}.tiff',cv2.IMREAD_UNCHANGED) for im in [self.output_im]]
+        outputs = [cv2.imread(self.dir_path + f'{self.event}_{im}.tiff',cv2.IMREAD_UNCHANGED).T for im in [self.output_im]]
         #print(list(im for im in [self.output_im])) # For debugging
 
-        inputs = self.transform(np.array(inputs))
-        outputs = self.transform(np.array(outputs))
+        inputs = self.transform(np.array(inputs)).float()
+        outputs = self.transform(np.array(outputs)).float()
         sample = {"wave_input": inputs,
                     "wave_input_label":self.output_im,
                     "wave_output": outputs,

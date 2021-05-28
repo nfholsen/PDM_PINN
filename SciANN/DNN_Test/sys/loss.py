@@ -1,5 +1,8 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
+from torch.nn.modules.utils import _quadruple
+
 from kornia.filters import SpatialGradient
 import numpy as np
 
@@ -26,9 +29,44 @@ class GDLLoss(nn.Module):
 
         return torch.mean(self.grad_diff_x ** self.alpha + self.grad_diff_y ** self.alpha)
 
-class PINNLoss(nn.Module):
-    def __init__(self, dh=5, dt=0.002, c=2200,device='cuda:0'):
-        super(PINNLoss, self).__init__()
+class PINNLoss_RES(nn.Module):
+    def __init__(self, dh=5, dt=0.002, c=2200, device='cuda:0'):
+       super(PINNLoss_RES, self).__init__()
+
+       # Parameters of the mesh
+       self.dh = dh
+       self.dt = dt
+       self.c = c
+       self.device = device
+
+       self.P = (self.dt * self.c/self.dh) ** 2
+
+       # Kernels filters
+       # x FD
+       self.weight_h = torch.FloatTensor([[[[ 0,  0,  0],[ 1, -2,  1],[ 0,  0,  0]]]]).to(self.device)
+       # y FD
+       self.weight_v = torch.FloatTensor([[[[ 0,  1,  0],[ 0, -2,  0],[ 0,  1,  0]]]]).to(self.device) 
+       self.padding = _quadruple(1)
+
+    def forward(self,fem_data):     
+
+       u_n_preds = fem_data[:,-1:,:,:] # Predicitons by the NN
+       u_n = fem_data[:,-2:-1,:,:]
+       u_n_1 = fem_data[:,-3:-2,:,:]
+
+       # Compute derivatives
+       self.u_dxdx = F.conv2d(F.pad(u_n, self.padding, mode='circular'), self.weight_h, stride=1, padding=0, bias=None)
+       self.u_dydy = F.conv2d(F.pad(u_n, self.padding, mode='circular'), self.weight_v, stride=1, padding=0, bias=None)   
+
+       # PDE acoustic wave equation : 
+       residuals = self.P * self.u_dxdx + self.P * self.u_dydy + 2 * u_n - u_n_1 - u_n_preds
+
+       return torch.norm(residuals)
+
+
+class PINNLoss_MSE(nn.Module):
+    def __init__(self, dh=5, dt=0.002, c=2200, device='cuda:0'):
+        super(PINNLoss_MSE, self).__init__()
 
         # Parameters of the mesh
         self.dh = dh
@@ -36,69 +74,37 @@ class PINNLoss(nn.Module):
         self.c = c
         self.device = device
 
-        # Kernels filters 
-        # x
-        self.x = np.array([[[ 0,  0,  0],
-               [ 0,  0,  0],
-               [ 0,  0,  0]],
-              [[ 0,  0,  0],
-               [ 1, -2,  1],
-               [ 0,  0,  0]],
-              [[ 0,  0,  0],
-               [ 0,  0,  0],
-               [ 0,  0,  0]]
-               ])
-        self.x = self.x/(self.dh ** 2)
+        self.P = (self.dt ** 2) * (self.c ** 2)/(self.dh ** 2)
 
-        # y
-        self.y = np.array([[[ 0,  0,  0],
-               [ 0,  0,  0],
-               [ 0,  0,  0]],
-              [[ 0,  1,  0],
-               [ 0, -2,  0],
-               [ 0,  1,  0]],
-              [[ 0,  0,  0],
-               [ 0,  0,  0],
-               [ 0,  0,  0]]
-               ])
-        self.y = self.y/(self.dh ** 2)
+        # Kernels filters
+        # x FD
+        self.weight_h = torch.FloatTensor([[[[ 0,  0,  0],[ 1, -2,  1],[ 0,  0,  0]]]]).to(self.device)
 
-        # z
-        self.z = np.array([[[ 0,  0,  0],
-               [ 0,  1,  0],
-               [ 0,  0,  0]],
-              [[ 0,  0,  0],
-               [ 0, -2,  0],
-               [ 0,  0,  0]],
-              [[ 0,  0,  0],
-               [ 0,  1,  0],
-               [ 0,  0,  0]]
-               ])
-        self.z = self.z/(self.dt ** 2)
+        # y FD
+        self.weight_v = torch.FloatTensor([[[[ 0,  1,  0],[ 0, -2,  0],[ 0,  1,  0]]]]).to(self.device) 
 
-        # u_dxdx
-        self.conv_x = nn.Conv3d(3, 1, kernel_size=3, stride=1, padding=(0,1,1), bias=False)
-        self.conv_x.weight=nn.Parameter(torch.from_numpy(self.x).float().unsqueeze(0).unsqueeze(0))
-        self.conv_x = self.conv_x.to(self.device)
-        # u_dydy
-        self.conv_y = nn.Conv3d(3, 1, kernel_size=3, stride=1, padding=(0,1,1), bias=False)
-        self.conv_y.weight=nn.Parameter(torch.from_numpy(self.y).float().unsqueeze(0).unsqueeze(0))
-        self.conv_y = self.conv_y.to(self.device)
+        self.padding = _quadruple(1)
 
-        # u_dtdt
-        self.conv_z = nn.Conv3d(3, 1, kernel_size=3, stride=1, padding=(0,1,1), bias=False)
-        self.conv_z.weight=nn.Parameter(torch.from_numpy(self.z).float().unsqueeze(0).unsqueeze(0))
-        self.conv_z = self.conv_z.to(self.device)
 
-    def forward(self,inputs):        
+    def forward(self,inputs):
+        """
+        inputs : combination of inputs and outputs of the model, shape = (Minibatch,Channels,Width,Height)
+        """    
+
+        # TODO : assert length of channels is 5
+
+        preds = inputs[:,-1:,:,:] # last from inputs (prediction from the NN)
+        u_n = inputs[:,-2:-1,:,:] 
+        u_n_1 = inputs[:,-3:-2,:,:]
 
         # Compute derivatives
-        u_dxdx, u_dydy, u_dtdt = self.conv_x(inputs), self.conv_y(inputs), self.conv_z(inputs)
+        self.u_dxdx = F.conv2d(F.pad(u_n, self.padding, mode='circular'), self.weight_h, stride=1, padding=0, bias=None)
+        self.u_dydy = F.conv2d(F.pad(u_n, self.padding, mode='circular'), self.weight_v, stride=1, padding=0, bias=None)
 
-        # PDE acoustic wave equation : 
-        residuals = u_dxdx + u_dydy - u_dtdt * (1 / (self.c ** 2))
+        # Next time step computed based on the finite difference method for the wave equation : 
+        next_u = self.P * self.u_dxdx + self.P * self.u_dydy + 2 * u_n - u_n_1
 
-        return torch.norm(residuals)
+        return torch.mean( torch.square(preds - next_u) )
 
 class MSLoss(nn.Module):
     def __init__(self, *loss_list): 
@@ -106,14 +112,14 @@ class MSLoss(nn.Module):
 
         self.loss_list = nn.ModuleList([*loss_list])
 
-    def forward(self,gen,gt,inputs=None):
+    def forward(self,gen=None,gt=None,pinn=None):
         
         loss_output = []
         for loss in self.loss_list:
             if loss.forward.__code__.co_argcount == 2: # If the number of inputs is 1, not Preds & True
-                loss_output.append(loss(inputs))
+                loss_output.append(loss(pinn))  # For physics loss
             else : 
-                loss_output.append(loss(gen,gt))
+                loss_output.append(loss(gen,gt)) # For supervised loss
 
         # TODO : change tuple if only one loss with if condition
         loss_output = [sum(loss_output)] + loss_output # Combine elements : first sum of losses for back prop, then all the individual losses

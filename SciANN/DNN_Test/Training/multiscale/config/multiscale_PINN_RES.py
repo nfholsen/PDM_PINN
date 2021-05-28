@@ -30,11 +30,11 @@ event = 'Event0000'
 
 # Paths
 save_dir = '../results/'
-save_pt_best = f'Best_L2_GDL_MAE_E{epochs}.pt'
-save_pt = f'Last_L2_GDL_MAE_E{epochs}.pt'
-save_txt = f'Last_L2_GDL_MAE_E{epochs}.yml'
+save_pt_best = f'Best_PINN_RES_E{epochs}.pt'
+save_pt = f'PINN_RES_E{epochs}.pt'
+save_txt = f'PINN_RES_E{epochs}.yml'
 
-checkpoint_path= f'checkpoint_L2_GDL_MAE_E{epochs}.pt'
+checkpoint_path= f'checkpoint_PINN_RES_E{epochs}.pt'
 
 # # # Data
 training_data = dataset(data_dir,data_csv,event=event)
@@ -66,7 +66,8 @@ class MultiScaleModel(BaseModel):
         """
         super().__init__(net, opt, sched, logger, print_progress, device)
 
-        self.loss_fn = MSLoss(*[nn.MSELoss(),GDLLoss(),nn.L1Loss()]) 
+        self.loss_fn = MSLoss(*[PINNLoss_RES(dh=5, dt=0.002, c=2500)])
+
 
     def forward_loss(self, data):
         """
@@ -82,9 +83,11 @@ class MultiScaleModel(BaseModel):
 
         output = self.net(input_4,input_2,input_1)
 
-        loss = self.loss_fn(output, label)
+        pinn = torch.cat((input,output),axis=1)[:,-3:,:,:]
 
-        return loss[0], {'Loss':loss[0], 'Loss MSE':loss[1], 'Loss GDL':loss[2], 'Loss MAE':loss[3]} # Elements in the dict : only for printing
+        loss = self.loss_fn(pinn=pinn)
+
+        return loss[0], {'Loss':loss[0], 'Loss PINN RES':loss[1]} #,'Loss MSE':loss[1],'Loss GDL':loss[2],'Loss MAE':loss[3]} # Elements in the dict : only for printing
 
 # Create the model
 model = MultiScaleModel(net, opt=optimizer, sched=None, logger=None, print_progress=False, device=device)

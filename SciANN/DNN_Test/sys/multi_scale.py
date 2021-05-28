@@ -1,18 +1,40 @@
 import torch
 import torch.nn as nn
 
-class ConvBlock(nn.Module): 
-    def __init__(self,in_channels): 
-        super(ConvBlock, self).__init__()
+class ConvBlockSmall(nn.Module): 
+    def __init__(self,in_channels,in_layers=32): 
+        super(ConvBlockSmall, self).__init__()
 
         self.convblock = torch.nn.Sequential(
-            torch.nn.Conv2d(in_channels=in_channels, out_channels=32, kernel_size=3, padding=1),
+            torch.nn.Conv2d(in_channels=in_channels, out_channels=in_layers, kernel_size=3, padding=1),
             torch.nn.ReLU(),
-            torch.nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=1),
+            torch.nn.Conv2d(in_channels=in_layers, out_channels=in_layers*2, kernel_size=3, padding=1),
             torch.nn.ReLU(),
-            torch.nn.Conv2d(in_channels=64, out_channels=32, kernel_size=3, padding=1),
+            torch.nn.Conv2d(in_channels=in_layers*2, out_channels=in_layers, kernel_size=3, padding=1),
             torch.nn.ReLU(),
-            torch.nn.Conv2d(in_channels=32, out_channels=1, kernel_size=3, padding=1),
+            torch.nn.Conv2d(in_channels=in_layers, out_channels=1, kernel_size=3, padding=1),
+        )
+
+    def forward(self, x):
+        x = self.convblock(x)
+        return x
+
+class ConvBlockBig(nn.Module): 
+    def __init__(self,in_channels,in_layers=32): 
+        super(ConvBlockBig, self).__init__()
+
+        self.convblock = torch.nn.Sequential(
+            torch.nn.Conv2d(in_channels=in_channels, out_channels=in_layers, kernel_size=3, padding=1),
+            torch.nn.ReLU(),
+            torch.nn.Conv2d(in_channels=in_layers, out_channels=in_layers*2, kernel_size=3, padding=1),
+            torch.nn.ReLU(),
+            torch.nn.Conv2d(in_channels=in_layers*2, out_channels=in_layers*4, kernel_size=3, padding=1),
+            torch.nn.ReLU(),
+            torch.nn.Conv2d(in_channels=in_layers*4, out_channels=in_layers*2, kernel_size=3, padding=1),
+            torch.nn.ReLU(),
+            torch.nn.Conv2d(in_channels=in_layers*2, out_channels=in_layers, kernel_size=3, padding=1),
+            torch.nn.ReLU(),
+            torch.nn.Conv2d(in_channels=in_layers, out_channels=1, kernel_size=3, padding=1),
         )
 
     def forward(self, x):
@@ -20,12 +42,12 @@ class ConvBlock(nn.Module):
         return x
 
 class MultiScale(nn.Module):
-    def __init__(self,in_channels): 
+    def __init__(self,in_channels,in_layers=32): 
         super(MultiScale, self).__init__()
 
-        self.convblock_1 = ConvBlock(in_channels=in_channels)
-        self.convblock_2 = ConvBlock(in_channels=in_channels+1)
-        self.convblock_3 = ConvBlock(in_channels=in_channels+1)
+        self.convblock_1 = ConvBlockSmall(in_channels=in_channels,in_layers=in_layers)
+        self.convblock_2 = ConvBlockBig(in_channels=in_channels+1,in_layers=in_layers)
+        self.convblock_3 = ConvBlockBig(in_channels=in_channels+1,in_layers=in_layers)
 
         self.upsample = nn.Upsample(scale_factor=(2,2))
 
