@@ -25,7 +25,7 @@ batch_size = 1
 
 # Data
 data_dir = '../../../Training_Data/Moseley_Homogeneous/'
-data_csv = '../../../Training_Data/Moseley_Homogeneous_Event0000_Continuous_AR.csv'
+data_csv = '../../../Training_Data/Moseley_Homogeneous_AR.csv'
 event = 'Event0000'
 
 # Paths
@@ -103,7 +103,7 @@ class UNetModel(BaseModel):
         return torch.tensor(0., requires_grad=True), {'Loss':loss_epoch, 'Loss AR PINN RES':loss_epoch} 
 
 # Create the model
-model = UNetModel(net=net, N=50,T=4, opt=optimizer, sched=None, logger=None, print_progress=True, device=device)
+model = UNetModel(net=net, N=40,T=4, opt=optimizer, sched=None, logger=None, print_progress=True, device=device)
 
 # Train the model
 model.train(epochs, train_loader, checkpoint_path=checkpoint_path, checkpoint_freq=5, save_best=None)

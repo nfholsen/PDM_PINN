@@ -25,14 +25,14 @@ batch_size = 2
 
 # Data
 data_dir = '../../../Training_Data/Moseley_Homogeneous/'
-data_csv = '../../../Training_Data/Moseley_Homogeneous_Event0000_Continuous.csv'
+data_csv = '../../../Training_Data/Moseley_Homogeneous.csv'
 event = 'Event0000'
 
 # Paths
 save_dir = '../results/'
 save_pt_best = f'Best_L2_GDL_E{epochs}.pt'
-save_pt = f'Last_L2_GDL_E{epochs}.pt'
-save_txt = f'Last_L2_GDL_E{epochs}.yml'
+save_pt = f'L2_GDL_E{epochs}.pt'
+save_txt = f'L2_GDL_E{epochs}.yml'
 
 checkpoint_path= f'checkpoint_L2_GDL_E{epochs}.pt'
 

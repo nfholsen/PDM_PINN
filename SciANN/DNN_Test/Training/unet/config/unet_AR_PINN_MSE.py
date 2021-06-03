@@ -20,19 +20,19 @@ else:
 # # # Config # # # 
 ##################
 
-epochs = 500
+epochs = 1000
 batch_size = 1
 
 # Data
 data_dir = '../../../Training_Data/Moseley_Homogeneous/'
-data_csv = '../../../Training_Data/Moseley_Homogeneous_Event0000_Continuous_AR.csv'
+data_csv = '../../../Training_Data/Moseley_Homogeneous_AR.csv'
 event = 'Event0000'
 
 # Paths
 save_dir = '../results/'
 #save_pt_best = f'Best_AR_PINN_MSE_E{epochs}.pt'
-save_pt = f'LAST_AR_PINN_MSE_E{epochs}.pt'
-save_txt = f'LAST_AR_PINN_MSE_E{epochs}.yml'
+save_pt = f'AR_PINN_MSE_E{epochs}.pt'
+save_txt = f'AR_PINN_MSE_E{epochs}.yml'
 
 checkpoint_path= f'checkpoint_AR_PINN_MSE_E{epochs}.pt'
 
@@ -103,7 +103,7 @@ class UNetModel(BaseModel):
         return torch.tensor(0., requires_grad=True), {'Loss':loss_epoch, 'Loss AR PINN MSE':loss_epoch} 
 
 # Create the model
-model = UNetModel(net=net, N=50,T=4, opt=optimizer, sched=None, logger=None, print_progress=True, device=device)
+model = UNetModel(net=net, N=40,T=4, opt=optimizer, sched=None, logger=None, print_progress=True, device=device)
 
 # Train the model
 model.train(epochs, train_loader, checkpoint_path=checkpoint_path, checkpoint_freq=5, save_best=None)

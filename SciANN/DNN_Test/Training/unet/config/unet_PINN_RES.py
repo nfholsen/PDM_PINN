@@ -26,7 +26,7 @@ batch_size = 2
 
 # Data
 data_dir = '../../../Training_Data/Moseley_Homogeneous/'
-data_csv = '../../../Training_Data/Moseley_Homogeneous_Event0000_Continuous.csv'
+data_csv = '../../../Training_Data/Moseley_Homogeneous.csv'
 event = 'Event0000'
 
 # Paths
