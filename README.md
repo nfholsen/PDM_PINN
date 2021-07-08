@@ -1,8 +1,15 @@
-# Repository for the Master Project - Physics informed neural networks for inverse problems in acoustic
+# Repository for the Master Project - PHYSICS INFORMED NEURAL NETWORKS FOR SURROGATE MODELLING AND INVERSE PROBLEMS IN GEOTECHNICS
 
 ## Description
 
-Finite elements methods (FEMs) and Finite difference methods (FDMs) have always been used to solve partial differential equations (PDEs). In the recent years with the advance in computational power and the availability of software, artificial neural networks (ANN) can be used as a mesh free methods to approximate physical systems. Combining sparse or even no data, physics informed neural networks (PINNs) can be trained simultaneously on available data and the governing differential equations tofit a specific model, to compute the solution of an ordinary and partial differential equations or to identify a parameter (model inversion).
+Finite elements methods (FEMs) have benefited from decades of development to solve partial differential equations (PDEs) and to simulate physical systems. In the recent years, machine learning (ML) and artificial neural networks (ANN) have shown great potential to approximate such systems. Combining sparse or even no data, physics informed neural networks (PINNs) can be trained simultaneously on available data and the governing differential equations to fit a specific model or to compute the solution of an ordinary and partial differential equations.
+
+This master project focuses on the implementation of ANN models in order to predict the evolution of an hyperbolic PDE that is the acoustic wave equation in geotechnic problems. Different model architectures and training scenarios are implemented to create a surrogate model that will predict from the first initial wavefields the acoustic propagation. The U-Net model trained in a semi-supervised approach with a physical loss yields promising results, the lower average RMSE and the higher SSIM. This model is able to extrapolate the acoustic propagation on data not shown during its training but lacks of robustness when predicting wavefields at larger time than the ones provided for its training.
+
+
+## Wave Equation 
+
+$\rho \nabla \cdot \left( \frac{1}{\rho} \nabla p \right)- \frac{1}{\nu^2} \frac{\partial^2p}{\partial t^2} = - \rho \frac{\partial^2 f}{\partial t^2}$
 
 ## Objectives
 
