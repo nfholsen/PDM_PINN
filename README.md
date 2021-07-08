@@ -1,4 +1,4 @@
-# Repository for the Master Project - PHYSICS INFORMED NEURAL NETWORKS FOR SURROGATE MODELLING AND INVERSE PROBLEMS IN GEOTECHNICS
+# PHYSICS INFORMED NEURAL NETWORKS FOR SURROGATE MODELLING AND INVERSE PROBLEMS IN GEOTECHNICS
 
 ## Description
 
@@ -17,9 +17,7 @@ This master project focuses on the implementation of ANN models in order to pred
 7. Test the best performing models on real data instead of synthetic data generated with FEM.
 
 ## Wave Equation 
-\begin{equation*}
-\rho \nabla \cdot \left( \frac{1}{\rho} \nabla p \right)- \frac{1}{\nu^2} \frac{\partial^2p}{\partial t^2} = - \rho \frac{\partial^2 f}{\partial t^2}
-\end{equation*}
+![Alt Text](https://github.com/nfholsen/PDM_PINN/blob/master/Figures_README/WaveEq.svg)
 
 ### Results
 |      Scenarios     |       U-Net     |      Encoder    |     MultiScale    |
