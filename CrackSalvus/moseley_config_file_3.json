@@ -1,0 +1,32 @@
+{
+    "simulation": {"output_path": "ForwardOutput/Moseley", "start_time": -0.1, "end_time": 0.4}, 
+    "materials": [
+        {"name": "solid", "parameters": {"VP": 2500, "VS": 1000, "RHO": 2200}, "fracture": false}
+    ],
+
+    "mesh": {"nelem_x": 300, "nelem_y": 300, "x_min":0, "x_max":1500, "y_min":0, "y_max":1500},
+    "sources": [
+        {"type": "acoustic", "location": {"x": 250, "y": 1500, "fx": 1, "fy": 1}, "frequency": 20},
+        {"type": "acoustic", "location": {"x": 750, "y": 1500, "fx": 1, "fy": 1}, "frequency": 20},
+        {"type": "acoustic", "location": {"x": 1250, "y": 1500, "fx": 1, "fy": 1}, "frequency": 20},
+        {"type": "acoustic", "location": {"x": 1500, "y": 1250, "fx": 1, "fy": 1}, "frequency": 20},
+        {"type": "acoustic", "location": {"x": 1500, "y": 750, "fx": 1, "fy": 1}, "frequency": 20},
+        {"type": "acoustic", "location": {"x": 1500, "y": 250, "fx": 1, "fy": 1}, "frequency": 20},
+        {"type": "acoustic", "location": {"x": 1250, "y": 0, "fx": 1, "fy": 1}, "frequency": 20},
+        {"type": "acoustic", "location": {"x": 750, "y": 0, "fx": 1, "fy": 1}, "frequency": 20},
+        {"type": "acoustic", "location": {"x": 250, "y": 0, "fx": 1, "fy": 1}, "frequency": 20},
+        {"type": "acoustic", "location": {"x": 0, "y": 1250, "fx": 1, "fy": 1}, "frequency": 20},
+        {"type": "acoustic", "location": {"x": 0, "y": 750, "fx": 1, "fy": 1}, "frequency": 20},
+        {"type": "acoustic", "location": {"x": 0, "y": 250, "fx": 1, "fy": 1}, "frequency": 20}        
+    ],
+    "receivers": [
+        {"location": {"x": 500, "y": 1500}, "field": "phi"}, 
+        {"location": {"x": 1000, "y": 1500}, "field": "phi"}, 
+        {"location": {"x": 1500, "y": 1000}, "field": "phi"}, 
+        {"location": {"x": 1500, "y": 500}, "field": "phi"}, 
+        {"location": {"x": 1000, "y": 0.0}, "field": "phi"},
+        {"location": {"x": 500, "y": 0.0}, "field": "phi"},
+        {"location": {"x": 0.0, "y": 500}, "field": "phi"},
+        {"location": {"x": 0.0, "y": 1000}, "field": "phi"}
+        ]
+    }
