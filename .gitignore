@@ -9,12 +9,10 @@ __pycache__/
 # Files to remove
 *.h5
 *.png
-*.csv
 *.dat
 *.pickle
 *.pt
 *.tiff
-*.npy
 
 # C extensions
 *.so
