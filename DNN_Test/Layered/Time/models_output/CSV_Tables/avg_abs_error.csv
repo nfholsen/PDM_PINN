@@ -1,0 +1,7 @@
+,Unet,Encoder,Multiscale
+AR PINN MSE,1.08e+01,8.54e+00,3.67e+01
+L2,5.31e+00,7.28e+00,inf
+L2 GDL,5.07e+00,8.25e+00,inf
+L2 GDL MAE,5.2e+00,7.6e+00,inf
+PINN MSE,5.71e+00,7.58e+00,inf
+PINN RES,4.85e+00,7.72e+00,1.66e+23
